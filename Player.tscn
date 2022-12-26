@@ -1,0 +1,109 @@
+[gd_scene load_steps=34 format=2]
+
+[ext_resource path="res://gfx/felix/rest_left/rest_left_0.png" type="Texture" id=1]
+[ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_00.png" type="Texture" id=3]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_05.png" type="Texture" id=4]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_01.png" type="Texture" id=5]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_08.png" type="Texture" id=6]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_02.png" type="Texture" id=7]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_07.png" type="Texture" id=8]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_04.png" type="Texture" id=9]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_06.png" type="Texture" id=10]
+[ext_resource path="res://gfx/felix/jump_left/jump_left_03.png" type="Texture" id=11]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_08.png" type="Texture" id=12]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_00.png" type="Texture" id=13]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_06.png" type="Texture" id=14]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_05.png" type="Texture" id=15]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_01.png" type="Texture" id=16]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_04.png" type="Texture" id=17]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_07.png" type="Texture" id=18]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_03.png" type="Texture" id=19]
+[ext_resource path="res://gfx/felix/jump_right/jump_right_02.png" type="Texture" id=20]
+[ext_resource path="res://gfx/felix/run_left/run_left_4.png" type="Texture" id=21]
+[ext_resource path="res://gfx/felix/run_left/run_left_0.png" type="Texture" id=22]
+[ext_resource path="res://gfx/felix/run_right/run_right_02.png" type="Texture" id=23]
+[ext_resource path="res://gfx/felix/run_right/run_right_03.png" type="Texture" id=24]
+[ext_resource path="res://gfx/felix/run_left/run_left_3.png" type="Texture" id=25]
+[ext_resource path="res://gfx/felix/run_left/run_left_2.png" type="Texture" id=26]
+[ext_resource path="res://gfx/felix/run_right/run_right_05.png" type="Texture" id=27]
+[ext_resource path="res://gfx/felix/run_left/run_left_1.png" type="Texture" id=28]
+[ext_resource path="res://gfx/felix/run_right/run_right_01.png" type="Texture" id=29]
+[ext_resource path="res://gfx/felix/run_right/run_right_04.png" type="Texture" id=30]
+[ext_resource path="res://gfx/felix/rest_right/rest_right_0.png" type="Texture" id=31]
+
+[sub_resource type="CapsuleShape" id=3]
+radius = 1.05463
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 5 ), ExtResource( 7 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 4 ), ExtResource( 10 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "jump_left",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 13 ), ExtResource( 16 ), ExtResource( 20 ), ExtResource( 19 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 14 ), ExtResource( 18 ), ExtResource( 12 ) ],
+"loop": true,
+"name": "jump_right",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "rest_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 31 ) ],
+"loop": true,
+"name": "rest_right",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 22 ), ExtResource( 28 ), ExtResource( 26 ), ExtResource( 25 ), ExtResource( 21 ) ],
+"loop": true,
+"name": "run_left",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 29 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 30 ), ExtResource( 27 ) ],
+"loop": true,
+"name": "run_right",
+"speed": 5.0
+} ]
+
+[node name="Spatial" type="KinematicBody"]
+axis_lock_motion_z = true
+move_lock_z = true
+script = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.0769944, 0.469324, 0.557591 )
+shape = SubResource( 3 )
+
+[node name="sprite" type="AnimatedSprite3D" parent="."]
+transform = Transform( 0.8, 0, 0, 0, 0.795337, 0.0862466, 0, -0.0862466, 0.795337, 0, 1.09549, 0 )
+cast_shadow = 2
+use_in_baked_light = true
+alpha_cut = 2
+frames = SubResource( 2 )
+animation = "rest_right"
+
+[node name="Camera" type="Camera" parent="sprite"]
+transform = Transform( 1.25, 0, 0, 0, 1.17712, -0.420567, 0, 0.420567, 1.17712, 0, -1.95769, 14.7197 )
+near = 0.01
+
+[node name="DirectionalLight" type="OmniLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.024471, 4.79877, 1.64588 )
+light_energy = 0.604
+light_indirect_energy = 1.613
+light_size = 1.0
+light_bake_mode = 2
+shadow_enabled = true
+shadow_bias = 0.75
+omni_range = 10.0633
+
+[node name="rest_timer" type="Timer" parent="."]
+process_mode = 0
+wait_time = 0.1
+one_shot = true
+
+[node name="sfx" type="AudioStreamPlayer" parent="."]
+
+[connection signal="timeout" from="rest_timer" to="." method="_on_rest_timer_timeout"]

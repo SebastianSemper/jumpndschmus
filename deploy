@@ -1,0 +1,15 @@
+#!/bin/sh
+USER=seb
+HOST=192.168.178.6
+DIR=www/games/jump   # the directory where your web site files should go
+
+mkdir build
+
+godot --no-window --export --video-driver GLES2 HTML5 build/index.html
+
+rsync -avz --delete build/* ${USER}@${HOST}:~/${DIR}
+# butler push build sebsem/jump:html
+
+rm -Rf build
+
+exit 0
