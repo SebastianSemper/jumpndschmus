@@ -12,6 +12,9 @@ var velocity: Vector3 = Vector3(0,0,0)
 var past: Array
 var time_index = 0
 var diff = Vector3(0,0,0)
+
+var face: MeshInstance
+
 func _ready():
 	move_lock_z = true
 	
@@ -23,11 +26,6 @@ func init(_rope, _parent: RopePart, _initial_pos: Vector3, _diameter: float, _di
 	if parent:
 		parent.set_child(self)
 		
-	var display = MeshInstance.new()
-	self.add_child(display)
-	display.mesh = CubeMesh.new()
-	display.scale = Vector3(_diameter, _diameter, _diameter)
-	
 	distance = _distance
 	
 	translation = _initial_pos
@@ -46,8 +44,9 @@ func init(_rope, _parent: RopePart, _initial_pos: Vector3, _diameter: float, _di
 	area.connect("body_shape_entered", self, "_ping")
 	
 	return self
+	
 
-func _ping(body_rid: RID, body: Node, body_shape_index: int, local_shape_index: int):
+func _ping(_body_rid: RID, body: Node, _body_shape_index: int, _local_shape_index: int):
 	if body == rope.player:
 		diff += 0.02 * body.velocity - (translation - past[time_index])
 
@@ -62,8 +61,11 @@ func relax(passes):
 	if parent.parent:
 		parent.translation -= correction_length * correction_direction
 
-func _process(delta):
-	pass 
+func _process(_delta):
+	_update_face()
+
+func _update_face():
+	pass
 	
 func _physics_process(delta):
 	if not parent:
@@ -78,7 +80,9 @@ func _physics_process(delta):
 	) - translation
 	if (translation + diff).y > 0:
 		diff.y *= -1 
-	translation += diff #move_and_slide(diff, Vector3(1,0,0))
+		
+	translation += diff
+	
 	diff = Vector3(0,0,0)
 	
 	time_index = (time_index + 1) % 2

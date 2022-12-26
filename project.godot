@@ -80,7 +80,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Jump 3"
+config/name="Jump 'n' Dschmus"
 run/main_scene="res://Main.tscn"
 boot_splash/show_image=false
 boot_splash/fullsize=false

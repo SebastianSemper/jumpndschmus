@@ -76,8 +76,8 @@ func build_room(is_first_room=false):
 	
 	return room
 
-func _add_ropes_to(room, player):
-	var rope: Rope = rope_scene.instance().init(player, 11, 12)
+func _add_ropes_to(room, _player):
+	var rope: Rope = rope_scene.instance().init(_player, 11, 15)
 	rope.translation += Vector3(0,room_height,5.247)
 	room.add_child(rope)
 

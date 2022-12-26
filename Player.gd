@@ -275,7 +275,7 @@ func _collect_input():
 	if Input.is_action_just_pressed("jump"):
 		flx_curr_key.append(flx_key.should_jump)
 
-func _process(delta):
+func _process(_delta):
 	if can_move:
 		_collect_input()
 		_collect_phy()
@@ -310,5 +310,5 @@ func _physics_process(delta):
 		if not flx_curr_key.back() == flx_key.should_jump:
 			velocity.y = -0.1
 	
-	move_and_slide(velocity, Vector3(0,1,0))
+	var _v = move_and_slide(velocity, Vector3(0,1,0))
 	

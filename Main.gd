@@ -51,7 +51,7 @@ func rem_old_room():
 func new_room_needed():
 	return mapped_range < explored_range + room_list.back().width
 
-func _process(delta):
+func _process(_delta):
 	explored_range = max(explored_range, $Player.translation.x)
 	
 	if new_room_needed():

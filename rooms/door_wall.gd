@@ -13,5 +13,5 @@ func block_path_back(position: Vector3):
 			backward_collide.disabled = false
 	
 
-func _on_Area_body_shape_exited(body_rid, body, body_shape_index, local_shape_index):
+func _on_Area_body_shape_exited(_body_rid, body, _body_shape_index, _local_shape_index):
 	block_path_back(body.global_transform.origin)
