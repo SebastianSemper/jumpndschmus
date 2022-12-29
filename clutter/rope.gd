@@ -10,55 +10,81 @@ var length: float
 var num_parts: int
 var parts: Array
 var faces: MeshInstance
+var faces_subdiv = 5
+
+var mesh_update_step: int = 0
+var mesh_update_max: int = 5
 
 var player
 
-var passes = 8
+var passes = 5
 var gravity: Vector3 = Vector3(0, -8, 0) 
 
 func _ready():
 	pass
 	
-func _process(_delta):
+func _process(delta):
 	if not _has_init:
 		return
 	
 	for ii in passes:
 		for pp in parts:
 			pp.relax(passes)
+			
+	mesh_update_step = (mesh_update_step + 1) % mesh_update_max
+	_update_face_mesh(mesh_update_step)
 	
-	_update_face_mesh()
+func _update_face_mesh(step):
 	
-func _update_face_mesh():
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(faces.mesh, 0)
-	for pp in range(parts.size()-1):
-		var direction = parts[pp+1].translation - parts[pp].translation
-		var shift = direction.cross(Vector3(0,0,-1)).normalized()
-		mdt.set_vertex(
-			6 * pp,
-			parts[pp].translation - 0.05 * shift
-		)
-		mdt.set_vertex(
-			6 * pp + 1,
-			parts[pp].translation + 0.05 * shift
-		)
-		mdt.set_vertex(
-			6 * pp + 2,
-			parts[pp + 1].translation - 0.05 * shift
-		)
-		mdt.set_vertex(
-			6 * pp + 3,
-			parts[pp].translation + 0.05 * shift
-		)
-		mdt.set_vertex(
-			6 * pp + 4,
-			parts[pp+1].translation + 0.05 * shift
-		)
-		mdt.set_vertex(
-			6 * pp + 5,
-			parts[pp + 1].translation - 0.05 * shift
-		)
+	var direction: Vector3
+	var shift_a: Vector3
+	var shift_b: Vector3
+	var angle: float
+	var cos_angle: float
+	var sin_angle: float
+	var start = step * int(float(parts.size()) / mesh_update_max)
+	var end = min(
+		(step + 1) * int(float(parts.size()) / mesh_update_max),
+		parts.size()-1
+	)
+	for pp in range(start, end):
+		direction = (parts[pp+1].translation - parts[pp].translation).normalized()
+		shift_b = Vector3(0,0,-1).normalized()
+		shift_a = direction.cross(shift_b).normalized()
+		for rr in range(faces_subdiv):
+			angle = rr * (2 * PI) / faces_subdiv
+			cos_angle = 0.1 * cos(angle)
+			sin_angle = 0.1 * sin(angle)
+			var cos_angle_next = 0.05 * cos(angle + (2 * PI) / faces_subdiv)
+			var sin_angle_next = 0.05 * sin(angle + (2 * PI) / faces_subdiv)
+			var ind_face = 6 * faces_subdiv * pp + 6 * rr
+			mdt.set_vertex(
+				ind_face,
+				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
+			)
+			mdt.set_vertex(
+				ind_face + 1,
+				parts[pp].translation + cos_angle_next * shift_a + sin_angle_next * shift_b
+			)
+			mdt.set_vertex(
+				ind_face + 2,
+				parts[pp+1].translation + cos_angle * shift_a + sin_angle * shift_b
+			)
+			mdt.set_vertex(
+				ind_face + 3,
+				parts[pp+1].translation + cos_angle * shift_a + sin_angle * shift_b
+			)
+			mdt.set_vertex(
+				ind_face + 4,
+				parts[pp+1].translation + cos_angle_next * shift_a + sin_angle_next * shift_b
+			)
+			mdt.set_vertex(
+				ind_face + 5,
+				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
+			)
+#		
 	faces.mesh.surface_remove(0)
 	mdt.commit_to_surface(faces.mesh)
 	
@@ -71,13 +97,14 @@ func _make_face_mesh() -> MeshInstance:
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_material(mat)
 	for pp in range(parts.size()-1):
-		st.add_vertex(parts[pp].translation + Vector3(-0.05, 0, 0))
-		st.add_vertex(parts[pp].translation + Vector3(+0.05, 0, 0))
-		st.add_vertex(parts[pp+1].translation + Vector3(+0.05, 0, 0))
-		
-		st.add_vertex(parts[pp].translation + Vector3(-0.05, 0, 0))
-		st.add_vertex(parts[pp+1].translation + Vector3(+0.05, 0, 0))
-		st.add_vertex(parts[pp+1].translation + Vector3(-0.05, 0, 0))
+		for _rr in range(faces_subdiv):
+			st.add_vertex(parts[pp].translation + Vector3(-0.05, 0, 0))
+			st.add_vertex(parts[pp].translation + Vector3(+0.05, 0, 0))
+			st.add_vertex(parts[pp+1].translation + Vector3(+0.05, 0, 0))
+			
+			st.add_vertex(parts[pp].translation + Vector3(-0.05, 0, 0))
+			st.add_vertex(parts[pp+1].translation + Vector3(+0.05, 0, 0))
+			st.add_vertex(parts[pp+1].translation + Vector3(-0.05, 0, 0))
 	st.commit(result_mesh)
 	result.mesh = result_mesh
 	

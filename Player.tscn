@@ -85,10 +85,6 @@ alpha_cut = 2
 frames = SubResource( 2 )
 animation = "rest_right"
 
-[node name="Camera" type="Camera" parent="sprite"]
-transform = Transform( 1.25, 0, 0, 0, 1.17712, -0.420567, 0, 0.420567, 1.17712, 0, -1.95769, 14.7197 )
-near = 0.01
-
 [node name="DirectionalLight" type="OmniLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.024471, 4.79877, 1.64588 )
 light_energy = 0.604

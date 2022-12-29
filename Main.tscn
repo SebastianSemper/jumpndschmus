@@ -50,4 +50,8 @@ volume_db = -7.341
 [node name="Menu" parent="." instance=ExtResource( 4 )]
 visible = false
 
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.998607, -0.052755, 0, 0.052755, 0.998607, 0, 5.2098, 18.3927 )
+near = 0.01
+
 [connection signal="start_game" from="Menu" to="." method="_on_Container_start_game"]

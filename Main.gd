@@ -54,6 +54,8 @@ func new_room_needed():
 func _process(_delta):
 	explored_range = max(explored_range, $Player.translation.x)
 	
+	$Camera.translation.x = $Player.translation.x
+	
 	if new_room_needed():
 		add_new_room()
 		if room_list.size() > 4:

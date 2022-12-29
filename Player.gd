@@ -4,9 +4,9 @@ var velocity = Vector3()
 
 const gravity: float = 60.0
 
-var jump_speed: float = 25.0
+var jump_speed: float = 21.0
 
-var move_speed: float = 10.0
+var move_speed: float = 8.0
 
 var felix: AnimatedSprite3D
 var rest_timer: Timer
