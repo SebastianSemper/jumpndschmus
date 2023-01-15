@@ -6,7 +6,7 @@
 [ext_resource path="res://gfx/menu/bg.png" type="Texture" id=4]
 
 [sub_resource type="DynamicFont" id=1]
-size = 42
+size = 50
 font_data = ExtResource( 2 )
 
 [sub_resource type="Theme" id=2]
@@ -31,10 +31,20 @@ stretch_mode = 1
 margin_right = 1024.0
 margin_bottom = 600.0
 
+[node name="Label2" type="Label" parent="VBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 64.0
+mouse_filter = 0
+theme = SubResource( 2 )
+theme_type_variation = "bigger"
+text = "JUMP 'N' DSCHMUS"
+align = 1
+
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
 margin_left = 202.0
+margin_top = 68.0
 margin_right = 821.0
-margin_bottom = 441.0
+margin_bottom = 509.0
 grow_horizontal = 0
 rect_min_size = Vector2( 10, 10 )
 size_flags_horizontal = 4
@@ -43,17 +53,18 @@ size_flags_stretch_ratio = 0.38
 texture = ExtResource( 3 )
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-margin_top = 445.0
+margin_top = 513.0
 margin_right = 1024.0
-margin_bottom = 499.0
+margin_bottom = 577.0
 mouse_filter = 0
 theme = SubResource( 2 )
-text = "START GAME"
+text = "START NEW GAME"
 align = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 503.0
+margin_top = 581.0
 margin_right = 1024.0
-margin_bottom = 503.0
+margin_bottom = 581.0
 
+[connection signal="gui_input" from="VBoxContainer/Label2" to="." method="_on_Label_gui_input"]
 [connection signal="gui_input" from="VBoxContainer/Label" to="." method="_on_Label_gui_input"]

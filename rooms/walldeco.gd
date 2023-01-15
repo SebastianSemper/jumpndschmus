@@ -11,9 +11,9 @@ func make_object() -> Sprite3D:
 	var obj: Sprite3D = Sprite3D.new()
 	obj.texture = ressource
 	obj.shaded = true
+	obj.pixel_size *= 4
 	return obj
 	
 func init(_ressource: StreamTexture):
 	ressource = _ressource
-	extent = ressource.get_size() * 0.01
 	return self

@@ -11,8 +11,8 @@ var distance: float
 var velocity: Vector3 = Vector3(0,0,0)
 var past: Array
 var time_index = 0
-var diff = Vector3(0,0,0)
-
+var diff: Vector3 = Vector3(0,0,0)
+var collision_diff: Vector3 = Vector3(0,0,0)
 var face: MeshInstance
 
 func _ready():
@@ -48,7 +48,7 @@ func init(_rope, _parent: RopePart, _initial_pos: Vector3, _diameter: float, _di
 
 func _ping(_body_rid: RID, body: Node, _body_shape_index: int, _local_shape_index: int):
 	if body == rope.player:
-		diff += 0.02 * body.velocity - (translation - past[time_index])
+		collision_diff = body.velocity - (translation - past[time_index])
 
 func relax(passes):
 	if not parent:
@@ -62,9 +62,6 @@ func relax(passes):
 		parent.translation -= correction_length * correction_direction
 
 func _process(_delta):
-	_update_face()
-
-func _update_face():
 	pass
 	
 func _physics_process(delta):
@@ -74,16 +71,18 @@ func _physics_process(delta):
 	past[time_index % 2] = translation
 	
 	diff += (
-		2 * translation 
+		translation 
 		- past[(time_index + 1) % 2]
 		+ delta * delta * rope.gravity
-	) - translation
+	) + delta * collision_diff
+	diff.x *= pow(0.5, delta)
 	if (translation + diff).y > 0:
 		diff.y *= -1 
 		
 	translation += diff
 	
 	diff = Vector3(0,0,0)
+	collision_diff = Vector3(0,0,0)
 	
 	time_index = (time_index + 1) % 2
 

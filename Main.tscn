@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
 [ext_resource path="res://sfx/background.wav" type="AudioStream" id=3]
 [ext_resource path="res://Menu.tscn" type="PackedScene" id=4]
+[ext_resource path="res://mobile_controls.tscn" type="PackedScene" id=5]
 
-[node name="Spatial" type="Spatial"]
+[node name="Main" type="Spatial"]
 script = ExtResource( 2 )
+debug = false
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.70094, 5.24731 )
@@ -46,6 +48,8 @@ text = "afasdcs"
 [node name="music" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
 volume_db = -7.341
+pitch_scale = 0.76
+autoplay = true
 
 [node name="Menu" parent="." instance=ExtResource( 4 )]
 visible = false
@@ -54,4 +58,13 @@ visible = false
 transform = Transform( 1, 0, 0, 0, 0.998607, -0.052755, 0, 0.052755, 0.998607, 0, 5.2098, 18.3927 )
 near = 0.01
 
-[connection signal="start_game" from="Menu" to="." method="_on_Container_start_game"]
+[node name="Controls" parent="." instance=ExtResource( 5 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[connection signal="pause_game" from="." to="." method="_on_Main_pause_game"]
+[connection signal="pause_game" from="." to="Menu" method="_on_Main_pause_game"]
+[connection signal="start_game" from="Menu" to="." method="_on_Menu_start_game"]

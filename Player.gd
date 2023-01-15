@@ -12,6 +12,8 @@ var felix: AnimatedSprite3D
 var rest_timer: Timer
 var can_move = false
 
+var controls
+
 onready var sfx: AudioStreamPlayer = $sfx
 var jump_sound: AudioStream = load("res://sfx/felix/jump.wav")
 var rest_sounds: Array = [
@@ -25,7 +27,7 @@ enum flx_key {
 	should_run_left,
 	should_jump
 }
-var flx_curr_key = []
+var flx_curr_key = [flx_key.none]
 
 enum flx_phy {
 	in_air,
@@ -266,20 +268,39 @@ func _ready():
 	felix = $sprite
 	rest_timer = $rest_timer
 
+func set_controls(_controls):
+	controls = _controls
+	controls.jump.connect("button_down", self, "_input_jump")
+	controls.jump.connect("pressed", self, "_input_jump")
+	controls.left.connect("button_down", self, "_input_left")
+
 func _collect_input():
 	flx_curr_key = [flx_key.none]
 	if Input.is_action_pressed("move_right"):
-		flx_curr_key.append(flx_key.should_run_right)
+		_input_right()
 	if Input.is_action_pressed("move_left"):
-		flx_curr_key.append(flx_key.should_run_left)
+		_input_left()
 	if Input.is_action_just_pressed("jump"):
-		flx_curr_key.append(flx_key.should_jump)
+		_input_jump()
+
+func _input_right():
+	flx_curr_key.append(flx_key.should_run_right)
+	
+func _input_left():
+	flx_curr_key.append(flx_key.should_run_left)
+
+func _input_jump():
+	flx_curr_key.append(flx_key.should_jump)
+
+func _clean_input():
+	pass
 
 func _process(_delta):
 	if can_move:
 		_collect_input()
 		_collect_phy()
 		_felix_change_state()
+		_clean_input()
 
 func _collect_phy():
 	if is_on_floor():

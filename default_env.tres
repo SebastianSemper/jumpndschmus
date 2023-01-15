@@ -5,15 +5,13 @@
 [resource]
 background_sky = SubResource( 1 )
 ambient_light_color = Color( 0.643137, 0.643137, 0.643137, 1 )
-ambient_light_energy = 0.61
+ambient_light_energy = 1.05
 ambient_light_sky_contribution = 0.0
 ssao_enabled = true
-ssao_radius = 31.04
-ssao_intensity = 6.39
-ssao_radius2 = 6.16
-ssao_intensity2 = 4.85
+ssao_radius = 33.84
+ssao_intensity = 9.88
+ssao_light_affect = 0.04
 ssao_quality = 2
-ssao_edge_sharpness = 1.11
 dof_blur_near_distance = 6.84
 dof_blur_near_transition = 3.42
 dof_blur_near_amount = 0.17

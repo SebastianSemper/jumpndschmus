@@ -13,6 +13,14 @@ var deco_buffer: float = .25
 var wall_deco_buffer = 0.5
 var player
 
+var obstacle_buffer = 1.5
+var obstacle_distance = 10
+var obstacle_min_distance = 5
+
+var rope_buffer = 1.5
+var rope_distance = 15.0
+var rope_min_distance = 8.0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	skins = SkinManager.new()
@@ -49,7 +57,7 @@ func build_room(is_first_room=false):
 	wall_mesh.size = Vector2(width, room_height)
 	wall_obj.set_translation(Vector3(0, room_height/2.0, 0))
 	wall_obj.mesh = wall_mesh
-	_scale_plane_uv(wall_obj, 0.1, 0.1)
+	_scale_plane_uv(wall_obj, 0.5, 0.5)
 	
 	var ceil_obj = MeshInstance.new()
 	room.add_child(ceil_obj)
@@ -72,14 +80,9 @@ func build_room(is_first_room=false):
 	add_deco_to(room)
 	_add_wall_sprites_to(room)
 	add_obstacles_to(room)
-	_add_ropes_to(room, player)
+#	_add_ropes_to(room, player)
 	
 	return room
-
-func _add_ropes_to(room, _player):
-	var rope: Rope = rope_scene.instance().init(_player, 10, 10)
-	rope.translation += Vector3(0,room_height,5.247)
-	room.add_child(rope)
 
 func _add_door_to(room, pos_x, block=false):
 	var door = door_scene.instance()
@@ -152,10 +155,56 @@ func add_deco_to(room: HouseRoom):
 			return
 
 func add_obstacles_to(room: HouseRoom):
-	var obst: Obstacle = room.skin.get_random_obstacle()
-	var obj: StaticBody = obst.make_object()
-	obj.translation.z = 5
-	room.add_child(obj)
+	var obstacled_range: float = obstacle_buffer 
+	while obstacled_range < room.width:
+		var obst: Obstacle = room.skin.get_random_obstacle()
+		
+		var shift_x = -log(1 - rand_range(0,1)) * obstacle_distance + obstacle_min_distance
+		print(shift_x)
+		var pos_x: float = -room.width/2 + obstacled_range + shift_x
+		
+		if pos_x + obst.extent.x > room.width/2 - obstacle_buffer:
+			return
+		
+		var obj: StaticBody = obst.make_object()
+		obj.translation.x = pos_x
+		obj.translation.z = 5
+		room.add_child(obj)
+		room.add_obstacle(
+			obj.translation.x - obst.extent.x - 5,
+			obj.translation.x + obst.extent.x + 5, 
+			2 * obst.extent.y
+		)
+		
+		obstacled_range += shift_x + obst.extent.x + obstacle_min_distance
+	
+func _add_ropes_to(room: HouseRoom, _player):
+	
+	var roped_range: float = rope_buffer
+	while roped_range < room.width:
+		var shift_x: float = max(
+			rope_min_distance,
+			-log(1 - rand_range(0,1)) * rope_distance
+		)
+		var pos_x: float = -room.width/2 + roped_range + shift_x
+		if pos_x > room.width/2 - rope_buffer:
+			return
+		
+		var length: float = room_height - room.obstacles_height(pos_x) - 3
+		var rope: Rope = rope_scene.instance().init(
+			_player,
+			length,
+			ceil(1.5 * length)
+		)
+		
+		rope.translation += Vector3(
+			pos_x,
+			room_height,
+			5.0
+		)
+		print("ROPE", pos_x)
+		room.add_child(rope)
+		roped_range += shift_x
 	
 func _scale_plane_uv(input_obj, scale_u, scale_v):
 	var mdt = MeshDataTool.new()

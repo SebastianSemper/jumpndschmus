@@ -11,19 +11,21 @@ var num_parts: int
 var parts: Array
 var faces: MeshInstance
 var faces_subdiv = 5
+var diameter = 0.15
+var face_texture = load("res://clutter/rope_texture.png")
 
 var mesh_update_step: int = 0
-var mesh_update_max: int = 5
+var mesh_update_max: int = 2
 
 var player
 
-var passes = 5
+var passes = 4
 var gravity: Vector3 = Vector3(0, -8, 0) 
 
 func _ready():
 	pass
 	
-func _process(delta):
+func _process(_delta):
 	if not _has_init:
 		return
 	
@@ -31,11 +33,22 @@ func _process(delta):
 		for pp in parts:
 			pp.relax(passes)
 			
-	mesh_update_step = (mesh_update_step + 1) % mesh_update_max
-	_update_face_mesh(mesh_update_step)
+	if _is_in_view():
+		mesh_update_step = (mesh_update_step + 1) % mesh_update_max
+		_update_face_mesh(mesh_update_step)
+
+func _is_in_view():
+	var camera:Camera = get_viewport().get_camera()
+	var camera_pos: Vector3 = camera.global_transform.origin
+	var own_pos: Vector3 = self.global_transform.origin
+	var z_dist = camera_pos.z - own_pos.z
+	var viewport_size: Vector2 = get_viewport().size
+	var aspect = viewport_size.x / viewport_size.y
+	var horizontal_angle = atan(aspect * tan(deg2rad(camera.fov / 2)))
 	
+	return 0.8 * abs(camera_pos.x - own_pos.x) < z_dist * tan(horizontal_angle)
+
 func _update_face_mesh(step):
-	
 	var mdt = MeshDataTool.new()
 	mdt.create_from_surface(faces.mesh, 0)
 	var direction: Vector3
@@ -43,7 +56,10 @@ func _update_face_mesh(step):
 	var shift_b: Vector3
 	var angle: float
 	var cos_angle: float
+	var cos_angle_next: float
+	var sin_angle_next: float
 	var sin_angle: float
+	var ind_face: int
 	var start = step * int(float(parts.size()) / mesh_update_max)
 	var end = min(
 		(step + 1) * int(float(parts.size()) / mesh_update_max),
@@ -53,13 +69,18 @@ func _update_face_mesh(step):
 		direction = (parts[pp+1].translation - parts[pp].translation).normalized()
 		shift_b = Vector3(0,0,-1).normalized()
 		shift_a = direction.cross(shift_b).normalized()
+		
 		for rr in range(faces_subdiv):
 			angle = rr * (2 * PI) / faces_subdiv
-			cos_angle = 0.1 * cos(angle)
-			sin_angle = 0.1 * sin(angle)
-			var cos_angle_next = 0.05 * cos(angle + (2 * PI) / faces_subdiv)
-			var sin_angle_next = 0.05 * sin(angle + (2 * PI) / faces_subdiv)
-			var ind_face = 6 * faces_subdiv * pp + 6 * rr
+			
+			cos_angle = 0.5 * diameter * cos(angle)
+			sin_angle = 0.5 * diameter * sin(angle)
+			
+			cos_angle_next = 0.5 * diameter * cos(angle + (2 * PI) / faces_subdiv)
+			sin_angle_next = 0.5 * diameter * sin(angle + (2 * PI) / faces_subdiv)
+			
+			ind_face = 6 * faces_subdiv * pp + 6 * rr
+			
 			mdt.set_vertex(
 				ind_face,
 				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
@@ -70,11 +91,11 @@ func _update_face_mesh(step):
 			)
 			mdt.set_vertex(
 				ind_face + 2,
-				parts[pp+1].translation + cos_angle * shift_a + sin_angle * shift_b
+				parts[pp+1].translation + cos_angle_next * shift_a + sin_angle_next * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 3,
-				parts[pp+1].translation + cos_angle * shift_a + sin_angle * shift_b
+				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 4,
@@ -82,7 +103,7 @@ func _update_face_mesh(step):
 			)
 			mdt.set_vertex(
 				ind_face + 5,
-				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
+				parts[pp+1].translation + cos_angle * shift_a + sin_angle * shift_b
 			)
 #		
 	faces.mesh.surface_remove(0)
@@ -92,18 +113,24 @@ func _make_face_mesh() -> MeshInstance:
 	var result = MeshInstance.new()
 	var result_mesh = Mesh.new()
 	var mat = SpatialMaterial.new()
-	mat.albedo_color = Color(0.8, 0.6, 0.5)
+	mat.albedo_texture = face_texture
 	var st = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_material(mat)
 	for pp in range(parts.size()-1):
-		for _rr in range(faces_subdiv):
+		for rr in range(faces_subdiv):
+			st.add_uv(Vector2(float(rr)/faces_subdiv, 0))
 			st.add_vertex(parts[pp].translation + Vector3(-0.05, 0, 0))
+			st.add_uv(Vector2(float(rr+1)/faces_subdiv, 0))
 			st.add_vertex(parts[pp].translation + Vector3(+0.05, 0, 0))
+			st.add_uv(Vector2(float(rr+1)/faces_subdiv, 1.0))
 			st.add_vertex(parts[pp+1].translation + Vector3(+0.05, 0, 0))
 			
+			st.add_uv(Vector2(float(rr)/faces_subdiv, 0))
 			st.add_vertex(parts[pp].translation + Vector3(-0.05, 0, 0))
+			st.add_uv(Vector2(float(rr+1)/faces_subdiv, 1))
 			st.add_vertex(parts[pp+1].translation + Vector3(+0.05, 0, 0))
+			st.add_uv(Vector2(float(rr)/faces_subdiv, 1))
 			st.add_vertex(parts[pp+1].translation + Vector3(-0.05, 0, 0))
 	st.commit(result_mesh)
 	result.mesh = result_mesh
@@ -133,7 +160,7 @@ func init(_player, _length: float, _num_parts: int) -> Rope:
 			self, 
 			parent, 
 			Vector3(float(pp) * diff_x, float(pp) * diff_y, 0),
-			0.1,
+			diameter,
 			distance
 		)
 		
