@@ -118,6 +118,10 @@ key_pause={
  ]
 }
 
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [physics]
 
 3d/smooth_trimesh_collision=true

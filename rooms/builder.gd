@@ -41,7 +41,7 @@ func build_room(is_first_room=false):
 	floor_obj.mesh = floor_mesh
 	floor_obj.set_rotation_degrees(Vector3(-90,0,0))
 	floor_obj.set_translation(Vector3(0,0, room_depth/2))
-	_scale_plane_uv(floor_obj, 0.1, 0.1)
+	_scale_plane_uv(floor_obj, 0.25, 0.25)
 	
 	var floor_collision = StaticBody.new()
 	var floor_shape = BoxShape.new()
@@ -66,7 +66,7 @@ func build_room(is_first_room=false):
 	ceil_obj.set_rotation_degrees(Vector3(90,0,0))
 	ceil_obj.set_translation(Vector3(0, room_height, 0))
 	ceil_obj.mesh = ceil_mesh
-	_scale_plane_uv(ceil_obj, 0.1, 0.1)
+	_scale_plane_uv(ceil_obj, 0.5, 0.5)
 	
 	_add_door_to(room, width/2)
 	
@@ -74,6 +74,7 @@ func build_room(is_first_room=false):
 		_add_door_to(room, -width/2, true)
 	
 	wall_obj.set_surface_material(0, room.skin.wall_material)
+	wall_obj.material_override = room.skin.wall_material
 	floor_obj.set_surface_material(0, room.skin.floor_material)
 	ceil_obj.set_surface_material(0, room.skin.wall_material)
 	

@@ -17,7 +17,6 @@ func floor_deco_height(x: float):
 	return 0
 	
 func add_obstacle(start: float, end: float, height: float):
-	print("obst",start, " - ", end, " - ", height)
 	_obstacle_params.append(Vector3(start, end, height))
 
 func obstacles_height(x: float):

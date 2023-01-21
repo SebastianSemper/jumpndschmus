@@ -21,12 +21,16 @@ func _ready():
 			WallDeco.new().init(load("res://gfx/livingroom/flat_2.png")),
 		],
 		[
+			Deco.new().init(load("res://gfx/livingroom/deco_1.png"), Vector3(1,1,0.2)),
 			Deco.new().init(load("res://gfx/livingroom/obstacle_1.png"), Vector3(1,1,0.2)),
 			Deco.new().init(load("res://gfx/livingroom/obstacle_2.png"), Vector3(1,1,0.6))
 		],
 		[
 			obstacle_factory.make_obstacle(
 				load("res://gfx/livingroom/obstacle_2.png")
+			),
+			obstacle_factory.make_obstacle(
+				load("res://gfx/livingroom/deco_1.png")
 			)
 		]
 	)

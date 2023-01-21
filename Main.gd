@@ -28,11 +28,9 @@ func _ready():
 	player = $Player
 	room_builder.player = player
 	player_start_pos = player.translation
-	
-	player.set_controls($Controls)
 	_setup_debug()
 
-func _start_fresh():
+func _start_fresh():	
 	var zeroth_room = room_builder.build_room(true)
 	add_child(zeroth_room)
 	room_list.append(zeroth_room)
@@ -104,9 +102,10 @@ func _process(delta: float):
 	if Input.is_action_pressed("key_pause"):
 		emit_signal("pause_game")
 
-
 func _on_Menu_start_game():
+	$blend._start_fade_in()
 	_start_fresh()
+	
 	$Player.can_move = true
 	game_running = true
 	$Controls.visible = true
@@ -116,3 +115,11 @@ func _on_Main_pause_game():
 	$Controls.visible = false
 	$Player.can_move = false
 	game_running = false
+
+
+func _on_blend_fade_in_done():
+	$Menu.visible = not $Menu.visible
+
+
+func _on_Main_ready():
+	$blend._start_fade_out(4000)

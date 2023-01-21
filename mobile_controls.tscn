@@ -34,3 +34,7 @@ margin_bottom = 600.0
 texture_normal = ExtResource( 1 )
 expand = true
 flip_h = true
+
+[connection signal="gui_input" from="jump" to="." method="_on_jump_gui_input"]
+[connection signal="gui_input" from="left" to="." method="_on_left_gui_input"]
+[connection signal="gui_input" from="right" to="." method="_on_right_gui_input"]

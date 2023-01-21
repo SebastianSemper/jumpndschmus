@@ -270,9 +270,6 @@ func _ready():
 
 func set_controls(_controls):
 	controls = _controls
-	controls.jump.connect("button_down", self, "_input_jump")
-	controls.jump.connect("pressed", self, "_input_jump")
-	controls.left.connect("button_down", self, "_input_left")
 
 func _collect_input():
 	flx_curr_key = [flx_key.none]
@@ -280,7 +277,7 @@ func _collect_input():
 		_input_right()
 	if Input.is_action_pressed("move_left"):
 		_input_left()
-	if Input.is_action_just_pressed("jump"):
+	if Input.is_action_pressed("jump"):
 		_input_jump()
 
 func _input_right():
