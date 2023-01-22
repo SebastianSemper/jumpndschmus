@@ -17,11 +17,11 @@ var obstacle_buffer = 1.5
 var obstacle_distance = 10
 var obstacle_min_distance = 5
 
+var hang_ropes = false
 var rope_buffer = 1.5
 var rope_distance = 15.0
 var rope_min_distance = 8.0
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	skins = SkinManager.new()
 	add_child(skins)
@@ -80,8 +80,12 @@ func build_room(is_first_room=false):
 	
 	add_deco_to(room)
 	_add_wall_sprites_to(room)
-	add_obstacles_to(room)
-#	_add_ropes_to(room, player)
+	
+	if !is_first_room:
+		add_obstacles_to(room)
+		
+	if !is_first_room and hang_ropes:
+		_add_ropes_to(room, player)
 	
 	return room
 

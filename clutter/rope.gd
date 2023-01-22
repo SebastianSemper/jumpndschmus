@@ -15,11 +15,11 @@ var diameter = 0.15
 var face_texture = load("res://clutter/rope_texture.png")
 
 var mesh_update_step: int = 0
-var mesh_update_max: int = 2
+var mesh_update_max: int = 1
 
 var player
 
-var passes = 4
+var passes = 10
 var gravity: Vector3 = Vector3(0, -8, 0) 
 
 func _ready():
@@ -66,7 +66,11 @@ func _update_face_mesh(step):
 		parts.size()-1
 	)
 	for pp in range(start, end):
-		direction = (parts[pp+1].translation - parts[pp].translation).normalized()
+		var this = parts[pp]
+		var next = parts[pp].child
+		if not next:
+			return
+		direction =  (next.translation - this.translation).normalized()
 		shift_b = Vector3(0,0,-1).normalized()
 		shift_a = direction.cross(shift_b).normalized()
 		
@@ -83,27 +87,27 @@ func _update_face_mesh(step):
 			
 			mdt.set_vertex(
 				ind_face,
-				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
+				this.translation + cos_angle * shift_a + sin_angle * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 1,
-				parts[pp].translation + cos_angle_next * shift_a + sin_angle_next * shift_b
+				this.translation + cos_angle_next * shift_a + sin_angle_next * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 2,
-				parts[pp+1].translation + cos_angle_next * shift_a + sin_angle_next * shift_b
+				next.translation + cos_angle_next * shift_a + sin_angle_next * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 3,
-				parts[pp].translation + cos_angle * shift_a + sin_angle * shift_b
+				this.translation + cos_angle * shift_a + sin_angle * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 4,
-				parts[pp+1].translation + cos_angle_next * shift_a + sin_angle_next * shift_b
+				next.translation + cos_angle_next * shift_a + sin_angle_next * shift_b
 			)
 			mdt.set_vertex(
 				ind_face + 5,
-				parts[pp+1].translation + cos_angle * shift_a + sin_angle * shift_b
+				next.translation + cos_angle * shift_a + sin_angle * shift_b
 			)
 #		
 	faces.mesh.surface_remove(0)

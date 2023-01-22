@@ -1,16 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Menu.gd" type="Script" id=1]
-[ext_resource path="res://gfx/font.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Menu.tres" type="Theme" id=2]
 [ext_resource path="res://gfx/menu/felix.png" type="Texture" id=3]
 [ext_resource path="res://gfx/menu/bg.png" type="Texture" id=4]
-
-[sub_resource type="DynamicFont" id=1]
-size = 50
-font_data = ExtResource( 2 )
-
-[sub_resource type="Theme" id=2]
-default_font = SubResource( 1 )
 
 [node name="Container" type="MarginContainer"]
 anchor_right = 1.0
@@ -23,24 +16,24 @@ script = ExtResource( 1 )
 
 [node name="TextureRect" type="TextureRect" parent="."]
 margin_right = 1024.0
-margin_bottom = 600.0
+margin_bottom = 649.0
 texture = ExtResource( 4 )
 stretch_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 1024.0
-margin_bottom = 600.0
+margin_bottom = 649.0
 
-[node name="Label2" type="Label" parent="VBoxContainer"]
+[node name="name" type="Label" parent="VBoxContainer"]
 margin_right = 1024.0
 margin_bottom = 64.0
 mouse_filter = 0
-theme = SubResource( 2 )
+theme = ExtResource( 2 )
 theme_type_variation = "bigger"
 text = "JUMP 'N' DSCHMUS"
 align = 1
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+[node name="img" type="TextureRect" parent="VBoxContainer"]
 margin_left = 202.0
 margin_top = 68.0
 margin_right = 821.0
@@ -52,19 +45,28 @@ size_flags_vertical = 4
 size_flags_stretch_ratio = 0.38
 texture = ExtResource( 3 )
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="start" type="Label" parent="VBoxContainer"]
 margin_top = 513.0
 margin_right = 1024.0
 margin_bottom = 577.0
 mouse_filter = 0
-theme = SubResource( 2 )
+theme = ExtResource( 2 )
 text = "START NEW GAME"
 align = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="spacer" type="MarginContainer" parent="VBoxContainer"]
 margin_top = 581.0
 margin_right = 1024.0
 margin_bottom = 581.0
 
-[connection signal="gui_input" from="VBoxContainer/Label2" to="." method="_on_Label_gui_input"]
-[connection signal="gui_input" from="VBoxContainer/Label" to="." method="_on_Label_gui_input"]
+[node name="end" type="Label" parent="VBoxContainer"]
+margin_top = 585.0
+margin_right = 1024.0
+margin_bottom = 649.0
+mouse_filter = 1
+theme = ExtResource( 2 )
+text = "End Game"
+align = 1
+
+[connection signal="gui_input" from="VBoxContainer/start" to="." method="_on_Label_gui_input"]
+[connection signal="gui_input" from="VBoxContainer/end" to="." method="_on_Label3_gui_input"]

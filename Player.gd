@@ -51,6 +51,7 @@ func _start_rest():
 	var lambda = 1.0/5.0
 	rest_timer.wait_time = -log(1 - rand_range(0,1))/lambda
 	rest_timer.start()
+	felix.play(flx_curr_rest_state)
 	
 func _on_rest_timer_timeout():
 	if flx_curr_state == flx_state.rst_right or flx_curr_state == flx_state.rst_left:
@@ -58,12 +59,14 @@ func _on_rest_timer_timeout():
 		sfx.play()
 
 func _start_rest_right():
+	flx_curr_rest_state = "rest_right_0"
 	_start_rest()
-	felix.play("rest_right")
+	
 var _start_rest_right_ref = funcref(self, "_start_rest_right")
 func _start_rest_left():
+	flx_curr_rest_state = "rest_left_0"
 	_start_rest()
-	felix.play("rest_left")
+	
 var _start_rest_left_ref = funcref(self, "_start_rest_left")
 
 func _start_jump():
@@ -263,10 +266,31 @@ onready var transition_dict = {
 	},
 }
 
+var rest_states = {
+	"rest_right_0": ["rest_right_0", "rest_right_0", "rest_right_1"],
+	"rest_right_1": ["rest_right_3"],
+	"rest_right_2": ["rest_right_0"],
+	"rest_right_3": ["rest_right_3", "rest_right_2"],
+	"rest_left_0": ["rest_left_0", "rest_left_0", "rest_left_1"],
+	"rest_left_1": ["rest_left_3"],
+	"rest_left_2": ["rest_left_0"],
+	"rest_left_3": ["rest_left_3", "rest_left_2"],
+}
+var flx_curr_rest_state = "rest_right_0"
+
+
+func _on_sprite_animation_finished():
+	if flx_curr_state == flx_state.rst_left or flx_curr_state == flx_state.rst_right:
+		var next_ind = randi() % rest_states[flx_curr_rest_state].size()
+		var next_state = rest_states[flx_curr_rest_state][next_ind]
+		flx_curr_rest_state = next_state
+		felix.play(next_state)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	felix = $sprite
 	rest_timer = $rest_timer
+	felix.play(flx_curr_rest_state)
 
 func set_controls(_controls):
 	controls = _controls
@@ -293,11 +317,10 @@ func _clean_input():
 	pass
 
 func _process(_delta):
-	if can_move:
-		_collect_input()
-		_collect_phy()
-		_felix_change_state()
-		_clean_input()
+	_collect_input()
+	_collect_phy()
+	_felix_change_state()
+	_clean_input()
 
 func _collect_phy():
 	if is_on_floor():
@@ -330,3 +353,5 @@ func _physics_process(delta):
 	
 	var _v = move_and_slide(velocity, Vector3(0,1,0))
 	
+
+

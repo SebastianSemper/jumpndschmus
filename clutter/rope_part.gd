@@ -75,7 +75,7 @@ func _physics_process(delta):
 		- past[(time_index + 1) % 2]
 		+ delta * delta * rope.gravity
 	) + delta * collision_diff
-	diff.x *= pow(0.5, delta)
+	
 	if (translation + diff).y > 0:
 		diff.y *= -1 
 		

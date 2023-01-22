@@ -3,12 +3,16 @@ extends Spatial
 var mapped_range = 0.0
 var explored_range = 0.0
 
-var room_list = []
+var room_list: Array = []
+
 var room_builder: RoomBuilder
+
 var last_room_check: float = 0
 var room_check_intervall: float = 5
+
 var game_running: bool = false
-var player
+
+onready var player
 var player_start_pos: Vector3
 
 export var debug: bool = true
@@ -21,16 +25,25 @@ onready var debug_phys = .get_node("debug/phys")
 
 signal pause_game
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	room_builder = RoomBuilder.new()
 	add_child(room_builder)
+	room_builder.hang_ropes = !mobile
 	player = $Player
 	room_builder.player = player
 	player_start_pos = player.translation
+	
 	_setup_debug()
+	
+	if debug:
+		_start_fresh()
+		game_running = true
 
-func _start_fresh():	
+func _start_fresh():
+	if room_list.size():
+		for rr in room_list.size():
+			room_list.pop_back().queue_free()
+		
 	var zeroth_room = room_builder.build_room(true)
 	add_child(zeroth_room)
 	room_list.append(zeroth_room)
@@ -45,21 +58,21 @@ func _start_fresh():
 	
 	last_room_check = room_check_intervall
 	
-	$Player.translation = player_start_pos
-	
-	if room_list.size():
-		for rr in room_list:
-			room_list.pop_front().queue_free()
+	player.translation = player_start_pos
 
 
 func _setup_debug():
-	if debug:
-		_start_fresh()
-		game_running = true
 	$debug.visible = debug
 	$Menu.visible = !debug
-	$Player.can_move = debug
+	player.can_move = debug
 	$music.playing = !debug
+	$Controls.visible = debug
+	
+func _update_debug():
+	debug_explored.text = str(explored_range)
+	debug_rooms.text = str(room_list.size())
+	debug_state.text = str(player.flx_curr_state)
+	debug_phys.text = str(player.flx_curr_phy)
 
 func add_new_room():
 	var room = room_builder.build_room(false)
@@ -87,17 +100,14 @@ func _process(delta: float):
 	if not game_running:
 		return 
 		
-	explored_range = max(explored_range, $Player.translation.x)
+	explored_range = max(explored_range, player.translation.x)
 	
-	$Camera.translation.x = $Player.translation.x
+	$Camera.translation.x = player.translation.x
 	
 	manage_rooms(delta)
 	
 	if debug:
-		debug_explored.text = str(explored_range)
-		debug_rooms.text = str(room_list.size())
-		debug_state.text = str($Player.flx_curr_state)
-		debug_phys.text = str($Player.flx_curr_phy)
+		_update_debug()
 		
 	if Input.is_action_pressed("key_pause"):
 		emit_signal("pause_game")
@@ -106,20 +116,25 @@ func _on_Menu_start_game():
 	$blend._start_fade_in()
 	_start_fresh()
 	
-	$Player.can_move = true
+	player.can_move = true
 	game_running = true
-	$Controls.visible = true
 
 
 func _on_Main_pause_game():
-	$Controls.visible = false
-	$Player.can_move = false
+	$blend._start_fade_in()
+	
+	player.can_move = false
 	game_running = false
 
 
 func _on_blend_fade_in_done():
 	$Menu.visible = not $Menu.visible
+	$Controls.visible = not $Controls.visible
 
 
 func _on_Main_ready():
 	$blend._start_fade_out(4000)
+
+
+func _on_Menu_end_game():
+	get_tree().quit()
