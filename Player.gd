@@ -4,7 +4,7 @@ var velocity = Vector3()
 
 const gravity: float = 60.0
 
-var jump_speed: float = 21.0
+var jump_speed: float = 23.0
 
 var move_speed: float = 8.0
 
@@ -286,14 +286,10 @@ func _on_sprite_animation_finished():
 		flx_curr_rest_state = next_state
 		felix.play(next_state)
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	felix = $sprite
 	rest_timer = $rest_timer
 	felix.play(flx_curr_rest_state)
-
-func set_controls(_controls):
-	controls = _controls
 
 func _collect_input():
 	flx_curr_key = [flx_key.none]
@@ -303,6 +299,16 @@ func _collect_input():
 		_input_left()
 	if Input.is_action_pressed("jump"):
 		_input_jump()
+		
+	if Input.is_action_just_released("move_right"):
+		if flx_curr_key.has(flx_key.should_run_right):
+			flx_curr_key.remove(flx_curr_key.find(flx_key.should_run_right))
+	if Input.is_action_just_released("move_left"):
+		if flx_curr_key.has(flx_key.should_run_left):
+			flx_curr_key.remove(flx_curr_key.find(flx_key.should_run_left))
+	if Input.is_action_just_released("jump"):
+		if flx_curr_key.has(flx_key.should_jump):
+			flx_curr_key.remove(flx_curr_key.find(flx_key.should_jump))
 
 func _input_right():
 	flx_curr_key.append(flx_key.should_run_right)

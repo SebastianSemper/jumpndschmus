@@ -130,7 +130,7 @@
 
 [sub_resource type="CapsuleShape" id=3]
 radius = 1.05463
-height = 0.495918
+height = 0.229086
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -201,11 +201,11 @@ move_lock_z = true
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.123097, 0.126913, 0.267633 )
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.123097, 0.377457, 0.194673 )
 shape = SubResource( 3 )
 
 [node name="sprite" type="AnimatedSprite3D" parent="."]
-transform = Transform( 0.8, 0, 0, 0, 0.795337, 0.0862466, 0, -0.0862466, 0.795337, 0, 1.09549, 0 )
+transform = Transform( 0.7, 0, 0, 0, 0.69592, 0.0754658, 0, -0.0754658, 0.69592, 0, 1.09549, 0 )
 cast_shadow = 2
 use_in_baked_light = true
 alpha_cut = 2

@@ -31,7 +31,7 @@ func build_room(is_first_room=false):
 	var room = HouseRoom.new()
 	room.skin = skins.get_random_skin()
 	
-	var width = rand_range(30, 60)
+	var width = rand_range(60, 120)
 	room.width = width
 	
 	var floor_obj = MeshInstance.new()

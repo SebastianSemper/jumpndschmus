@@ -9,6 +9,7 @@
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 2 )
+debug = false
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.70094, 5.24731 )
@@ -69,6 +70,7 @@ margin_bottom = 600.0
 
 [connection signal="pause_game" from="." to="." method="_on_Main_pause_game"]
 [connection signal="ready" from="." to="." method="_on_Main_ready"]
+[connection signal="finished" from="music" to="." method="_on_music_finished"]
 [connection signal="end_game" from="Menu" to="." method="_on_Menu_end_game"]
 [connection signal="start_game" from="Menu" to="." method="_on_Menu_start_game"]
 [connection signal="fade_in_done" from="blend" to="." method="_on_blend_fade_in_done"]
